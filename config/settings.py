@@ -28,7 +28,7 @@ INSTALLED_APPS = [
     
     #My's apps
     'history_rating.apps.HistoryRatingConfig',
-    'matches.apps.apps.MatchesConfig',
+    'matches.apps.MatchesConfig',
     'player.apps.PlayerConfig',
     'tournaments.apps.TournamentsConfig',
 
