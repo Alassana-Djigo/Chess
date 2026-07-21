@@ -17,7 +17,7 @@ class Jogador(models.Model):
     date_birth = models.DateField()
     title = models.CharField(max_length=3, choices=TITLE, default="X")
     federation = models.CharField(max_length=80)
-    id_fide = models.PositiveIntegerField(unique=True, blank=False)
+    id_fide = models.PositiveIntegerField(blank=True, unique=True, null=True)
 
     def __str__(self):
         return self.name
