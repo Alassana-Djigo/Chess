@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'matches.apps.MatchesConfig',
     'player.apps.PlayerConfig',
     'tournaments.apps.TournamentsConfig',
+    'core.apps.CoreConfig',
 
 ]
 
