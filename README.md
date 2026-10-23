@@ -65,6 +65,27 @@ python manage.py createsuperuser
 python manage.py runserver         # http://127.0.0.1:8000/admin/
 ```
 
+## Importar jogadores da FIDE
+
+A FIDE publica todos os meses a lista de ratings (um ZIP com um XML grande). O comando lê-a em
+fluxo, sem a carregar toda para a memória, e grava os jogadores e os ratings clássico, rápido
+e blitz:
+
+    python manage.py import_fide_players --min-rating 2500
+    python manage.py import_fide_players --file lista.zip --period 2026-10
+
+| Opção | Efeito |
+| ----- | ------ |
+| `--file` | ZIP ou XML local. Sem ela, descarrega a lista actual para `data/` (pasta ignorada pelo Git). |
+| `--period` | Mês a que a lista pertence, como `2026-10`. Por defeito, o mês actual. |
+| `--min-rating` | Só importa jogadores com pelo menos um rating igual ou superior. |
+| `--limit` | Pára depois de importar este número de jogadores (para testes rápidos). |
+
+É seguro repetir o comando: não duplica nada e actualiza o que mudou, e cada mês fica com o seu
+próprio histórico de ratings. O mês não vem dentro do ficheiro, por isso o comando usa o mês
+actual ou o `--period` que indicares. Se o download falhar, descarrega o ficheiro em
+https://ratings.fide.com/download_lists.phtml e usa `--file`.
+
 ## Qualidade
 
 ```bash

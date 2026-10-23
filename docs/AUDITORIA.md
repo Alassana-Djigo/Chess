@@ -84,3 +84,16 @@ Notas:
   FIDE traçam as fronteiras de forma diferente, por isso os importadores devem preferir a
   categoria que a própria fonte indica.
 - Corrigido o plural no admin ("Matchs" passa a "Matches").
+
+## 7. Resolução (Fase 1, passo 2)
+
+O comando `import_fide_players` deixou de ser um esqueleto. Lê a lista mensal da FIDE (ZIP ou XML,
+descarregada ou local) e grava os jogadores (`fide_id`, nome, federação, ano de nascimento e
+títulos) e os ratings clássico, rápido e blitz em `HistoryRating`, com origem `fide`.
+
+- Leitura em fluxo: a memória não cresce com o tamanho do ficheiro (cerca de 70 MB num teste
+  sintético com 300 000 jogadores).
+- Repetível: correr duas vezes com os mesmos dados não cria nada de novo.
+- Os campos `sex` e `flag` (inactivo) da FIDE não são guardados, porque o modelo ainda não tem
+  onde os pôr.
+- O mês da lista não vem dentro do ficheiro: usa-se `--period` ou o mês actual.
