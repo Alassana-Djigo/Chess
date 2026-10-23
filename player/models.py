@@ -12,6 +12,7 @@ TITLE = [
     ("WCM", "Woman Candidate Master"),
 ]
 
+
 class Jogador(models.Model):
     name = models.CharField(max_length=50)
     date_birth = models.DateField()

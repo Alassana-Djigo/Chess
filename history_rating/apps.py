@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class HistoryRatingConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'history_rating'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "history_rating"
