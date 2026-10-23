@@ -13,8 +13,9 @@ FORMAT = [
     ("McS", "McMahon System"),
     ("TT", "Team Tournament"),
     ("TM", "Team Match"),
-    ("RS" ,"Repechage System")
+    ("RS", "Repechage System"),
 ]
+
 
 class Tournament(models.Model):
     name = models.CharField(max_length=80)
