@@ -57,3 +57,30 @@ mais barato para os corrigir**.
 - Comando `import_fide_players`: hoje é um esqueleto que só escreve uma mensagem. Implementa-se
   na Fase 1, depois de fechar M1 a M3.
 - Django REST Framework, Celery, Redis, Channels e o front-end: Fases 1 a 3.
+
+## 6. Resolução (Fase 1, passo 1)
+
+| # | Estado | O que foi feito |
+| - | ------ | --------------- |
+| M1 | Feito | `birth_year` opcional, validado entre 1900 e 2100. |
+| M2 | Parcial | `federation` guarda o código de 3 letras, validado. A tabela com os nomes dos países fica para mais tarde. |
+| M3 | Feito | `title` e `women_title`; vazio significa sem título. |
+| M4 | Feito | `Player`, `fide_id`, `format`, `venue`, `TimeCategory`. |
+| M5 | Feito | `PlayerAccount` (plataforma + username, único sem distinguir maiúsculas de minúsculas). |
+| M6 | Feito | `HistoryRating.source` e unicidade por (jogador, origem, categoria, data). |
+| M7 | Feito | `pgn`, `eco`, `opening`, `white_elo`, `black_elo`, `round`, `board`, `source` e `external_id` (único por origem). |
+| M8 | Feito | `outcome` aceita `*` (em curso), que passa a ser o valor por defeito. |
+| M9 | Feito | `time_base` e `time_increment` (segundos) mais `time_category`; `date` e `started_at`. |
+| M10 | Feito | `Tournament` com `source`, `external_id`, `status`, `rounds` e `end_date` opcional. |
+| M11 | Feito | Constraints (jogadores diferentes, fim não anterior ao início) e índices por data e jogador. |
+| M12 | Feito | `name` com 150 caracteres. |
+
+Notas:
+
+- `Tournament.prize` passou a ser opcional (desconhecido é diferente de zero) e não regista a moeda.
+- `Match.location` passou a `Match.venue` e já não aceita NULL.
+- `core.timecontrol.categorize_time_control` classifica um relógio pela convenção da Lichess
+  (duração estimada = base + 40 x incremento; limites de 180, 480 e 1500 segundos). A Chess.com e a
+  FIDE traçam as fronteiras de forma diferente, por isso os importadores devem preferir a
+  categoria que a própria fonte indica.
+- Corrigido o plural no admin ("Matchs" passa a "Matches").

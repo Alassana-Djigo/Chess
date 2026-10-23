@@ -5,6 +5,6 @@ from .models import Tournament
 
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
-    search_fields = ["name", "local"]
-    list_display = ["name", "formate", "prize"]
-    list_filter = ["formate", "start_date"]
+    search_fields = ["name", "venue"]
+    list_display = ["name", "format", "status", "start_date", "end_date"]
+    list_filter = ["format", "status", "start_date"]
