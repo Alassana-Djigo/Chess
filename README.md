@@ -5,7 +5,7 @@ estatísticas desportivas (futebol, basquetebol), para comentadores, streamers e
 acompanha xadrez com olhar analítico. Mostra probabilidades e estatísticas; **não mostra odds**.
 
 > Estado: **Fase 0 concluída** (fundação do projecto). Ainda não há páginas públicas nem
-> integrações com APIs. Ver o [roadmap](#roadmap) e [docs/DECISOES.md](docs/DECISOES.md).
+> integrações com APIs. Ver o [roadmap](#roadmap), [docs/DECISOES.md](docs/DECISOES.md) e [docs/AUDITORIA.md](docs/AUDITORIA.md).
 
 ## Stack
 
