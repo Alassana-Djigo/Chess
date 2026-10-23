@@ -1,3 +1,29 @@
-\venv
-\__pycache__
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Django
+*.sqlite3
+/staticfiles/
+/media/
+
+# Segredos: nunca fazer commit do .env (so do .env.example)
 .env
+!.env.example
+
+# Ferramentas
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Dados locais pesados (listas FIDE, dumps de partidas)
+/data/
+
+# Editores / sistema
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
