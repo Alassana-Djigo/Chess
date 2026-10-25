@@ -86,6 +86,37 @@ próprio histórico de ratings. O mês não vem dentro do ficheiro, por isso o c
 actual ou o `--period` que indicares. Se o download falhar, descarrega o ficheiro em
 https://ratings.fide.com/download_lists.phtml e usa `--file`.
 
+## Ligar contas da Lichess
+
+O comando liga uma conta da Lichess a um jogador e importa os ratings e as partidas recentes:
+
+    python manage.py sync_lichess NomeNaLichess --fide-id 5000001
+    python manage.py sync_lichess NomeNaLichess
+    python manage.py sync_lichess NomeNaLichess --create
+
+Para saber a que jogador a conta pertence, o comando usa, por esta ordem: a conta já ligada, o
+jogador indicado com `--fide-id` ou `--player-id`, o FIDE ID que o próprio utilizador publicou
+na Lichess (se esse jogador já foi importado da FIDE) e, só com `--create`, um jogador novo.
+
+| Opção | Efeito |
+| ----- | ------ |
+| `--fide-id`, `--player-id` | Liga ao jogador com esse FIDE ID ou id da base de dados. |
+| `--create` | Cria o jogador se não encontrar nenhum. |
+| `--max-games` | Quantas partidas recentes importar (por defeito, 30). |
+| `--no-games`, `--no-ratings` | Salta as partidas ou os ratings. |
+
+Entram as partidas classificadas de xadrez standard em bullet, blitz, rapid e clássico. Ficam de
+fora as partidas contra o computador ou contra anónimos, as variantes, o ultra-bullet e o jogo por
+correspondência. Os adversários que ainda não existem ficam como jogadores mínimos, com o nome de
+utilizador da Lichess, para se poderem juntar a uma pessoa real mais tarde. É seguro repetir o
+comando.
+
+Sem autenticação, a Lichess devolve uma cópia em cache do histórico de ratings, ou nada. Para o
+histórico completo, cria um token pessoal (Preferences, API access tokens) e põe-no no `.env` como
+`LICHESS_API_TOKEN`. Sem histórico, o rating actual de cada categoria é gravado na mesma, com a
+data de hoje. Se a Lichess responder com um limite de pedidos (429), o comando espera um minuto
+e tenta outra vez.
+
 ## Qualidade
 
 ```bash
@@ -107,6 +138,7 @@ O CI corre exactamente isto, contra um PostgreSQL, em cada pull request e em cad
 | `matches`         | Partidas                                              |
 | `tournaments`     | Torneios                                              |
 | `history_rating`  | Histórico de ratings                                  |
+| `providers`       | Clientes das fontes externas (Lichess); pacote simples, sem models |
 
 ## Roadmap
 

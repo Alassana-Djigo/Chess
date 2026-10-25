@@ -97,3 +97,19 @@ títulos) e os ratings clássico, rápido e blitz em `HistoryRating`, com origem
 - Os campos `sex` e `flag` (inactivo) da FIDE não são guardados, porque o modelo ainda não tem
   onde os pôr.
 - O mês da lista não vem dentro do ficheiro: usa-se `--period` ou o mês actual.
+
+## 8. Resolução (Fase 1, passo 3)
+
+O comando `sync_lichess` liga uma conta da Lichess a um jogador (por FIDE ID, por id da base de
+dados, pelo FIDE ID que o utilizador publicou na Lichess, ou criando o jogador) e importa os
+ratings e as partidas recentes.
+
+- Os adversários que ainda não existem na base ficam como jogadores mínimos (nome igual ao
+  utilizador da Lichess) com a respectiva conta, para se poderem juntar a uma pessoa real mais tarde.
+- Só entram partidas classificadas de xadrez standard em bullet, blitz, rapid e clássico. Ficam de
+  fora as partidas contra o computador ou anónimos, as variantes, o ultra-bullet e o jogo por
+  correspondência.
+- Sem token, a Lichess devolve o histórico de ratings em cache ou vazio. O rating actual de cada
+  categoria é sempre gravado com a data de hoje.
+- Para a fase do tempo real: os endpoints de Broadcasts (torneios presenciais) exigem um token com
+  a permissão `study:read`.
