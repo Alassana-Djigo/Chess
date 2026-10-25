@@ -1,6 +1,6 @@
 """Reading the monthly FIDE rating list (https://ratings.fide.com/download_lists.phtml).
 
-The list is a ZIP with one very large XML file (hundreds of thousands of players), so it is
+The list is a ZIP with one very large XML file (almost two million players), so it is
 parsed as a stream and never loaded into memory at once. The file comes from FIDE over HTTPS
 and Python's expat parser already limits entity expansion, so the standard library parser is
 enough here.
