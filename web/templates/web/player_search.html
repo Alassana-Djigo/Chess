@@ -1,0 +1,26 @@
+{% extends "web/base.html" %}
+{% block title %}{% if query %}{{ query }} · {% endif %}Jogadores · Chess Stats{% endblock %}
+{% block content %}
+<h1>Jogadores</h1>
+{% if not query %}
+<p class="empty">Escreve um nome ou um FIDE ID na caixa de pesquisa.</p>
+{% elif not players %}
+<p class="empty">Nenhum jogador encontrado para «{{ query }}».</p>
+{% else %}
+<div class="table-wrap">
+  <table class="data">
+    <thead><tr><th>Jogador</th><th>Federação</th><th>FIDE ID</th><th class="num">Rating clássico</th></tr></thead>
+    <tbody>
+      {% for player in players %}
+      <tr>
+        <td><a href="{% url 'player_detail' player.pk %}">{% if player.title %}<span class="title">{{ player.title }}</span> {% endif %}{{ player.display_name }}</a></td>
+        <td>{{ player.federation|default:"–" }}</td>
+        <td>{{ player.fide_id|default:"–" }}</td>
+        <td class="num strong">{{ player.fide_classical|default:"–" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

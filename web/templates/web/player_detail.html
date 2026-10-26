@@ -1,0 +1,131 @@
+{% extends "web/base.html" %}
+{% block title %}{{ player.display_name }} · Chess Stats{% endblock %}
+{% block content %}
+<section class="profile-head">
+  <div>
+    <h1>{% if player.title %}<span class="title">{{ player.title }}</span> {% endif %}{{ player.display_name }}</h1>
+    <p class="facts">
+      {% if player.women_title %}<span>{{ player.women_title }}</span>{% endif %}
+      {% if player.federation %}<span>{{ player.federation }}</span>{% endif %}
+      {% if player.birth_year %}<span>Nascido em {{ player.birth_year }}</span>{% endif %}
+      {% if player.fide_id %}<span>FIDE ID {{ player.fide_id }}</span>{% endif %}
+    </p>
+  </div>
+  {% if accounts %}
+  <ul class="accounts">
+    {% for account in accounts %}
+    <li><a href="{{ account.profile_url }}" rel="noopener noreferrer">{{ account.get_platform_display }}: {{ account.username }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+
+<section id="ratings">
+  <h2>Ratings</h2>
+  {% if ratings %}
+  <nav class="tabs" aria-label="Escolher rating">
+    {% for row in ratings %}
+    <a href="?source={{ row.source }}&amp;category={{ row.category }}#ratings"{% if row == selected %} aria-current="page"{% endif %}>
+      <span class="tab-label">{{ row.source_label }} · {{ row.category_label }}</span>
+      <span class="tab-value">{{ row.rating }}</span>
+    </a>
+    {% endfor %}
+  </nav>
+
+  {% if chart %}
+  <figure class="chart">
+    <svg viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img" aria-label="Evolução do rating {{ selected.source_label }} {{ selected.category_label }}">
+      <title>Evolução do rating {{ selected.source_label }} {{ selected.category_label }}, de {{ chart.first_date|date:"d/m/Y" }} a {{ chart.last_date|date:"d/m/Y" }}</title>
+      {% for y, value in chart.y_ticks %}
+      <line class="grid" x1="52" x2="{{ chart.width }}" y1="{{ y }}" y2="{{ y }}"/>
+      <text class="axis" x="46" y="{{ y }}" text-anchor="end" dominant-baseline="middle">{{ value }}</text>
+      {% endfor %}
+      {% if chart.line %}
+      <path class="area" d="{{ chart.area }}"/>
+      <path class="line" d="{{ chart.line }}"/>
+      {% endif %}
+      <circle class="dot" cx="{{ chart.last_x }}" cy="{{ chart.last_y }}" r="4.5"/>
+    </svg>
+    <figcaption>
+      <span>{{ chart.first_date|date:"d/m/Y" }}</span>
+      <span>{{ chart.count }} registo{{ chart.count|pluralize }}</span>
+      <span>{{ chart.last_date|date:"d/m/Y" }}</span>
+    </figcaption>
+  </figure>
+  {% endif %}
+  {% else %}
+  <p class="empty">Ainda não há ratings para este jogador.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Resultados</h2>
+  {% if summary.overall.games %}
+  <p class="form-line">
+    <span class="muted">{% if summary.form|length == 1 %}Última partida{% else %}Últimas {{ summary.form|length }} partidas{% endif %}</span>
+    {% for result in summary.form %}{% include "web/_result.html" with result=result %}{% endfor %}
+  </p>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th></th><th>Partidas</th><th>V</th><th>E</th><th>D</th><th>Pontos</th></tr></thead>
+      <tbody>
+        {% include "web/_tally_row.html" with label="Total" tally=summary.overall %}
+        {% include "web/_tally_row.html" with label="Com brancas" tally=summary.as_white %}
+        {% include "web/_tally_row.html" with label="Com pretas" tally=summary.as_black %}
+        {% for label, tally in summary.by_category %}
+        {% include "web/_tally_row.html" with label=label tally=tally %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if summary.openings %}
+  <h3>Aberturas mais jogadas</h3>
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th>Abertura</th><th>Partidas</th><th>V</th><th>E</th><th>D</th><th>Pontos</th></tr></thead>
+      <tbody>
+        {% for row in summary.openings %}
+        <tr>
+          <th scope="row">{% if row.eco %}<span class="muted">{{ row.eco }}</span> {% endif %}{{ row.name|default:"–" }}</th>
+          <td>{{ row.tally.games }}</td><td>{{ row.tally.wins }}</td><td>{{ row.tally.draws }}</td><td>{{ row.tally.losses }}</td>
+          <td>{{ row.tally.score_percent }}%</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+  {% else %}
+  <p class="empty">Ainda não há partidas terminadas para este jogador.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Partidas recentes</h2>
+  {% if games %}
+  <div class="table-wrap">
+    <table class="data games">
+      <thead><tr><th>Data</th><th></th><th>Cor</th><th>Adversário</th><th>Ritmo</th><th>Abertura</th><th></th></tr></thead>
+      <tbody>
+        {% for game in games %}
+        <tr>
+          <td>{{ game.date|date:"d/m/Y" }}</td>
+          <td>{% include "web/_result.html" with result=game.result %}</td>
+          <td><span class="square {{ game.color }}" title="{% if game.color == 'white' %}Brancas{% else %}Pretas{% endif %}"></span></td>
+          <td>
+            <a href="{% url 'player_detail' game.opponent.pk %}">{{ game.opponent.display_name }}</a>
+            {% if game.opponent_rating %}<span class="muted">({{ game.opponent_rating }})</span>{% endif %}
+          </td>
+          <td>{{ game.category_label }}</td>
+          <td>{% if game.eco %}<span class="muted">{{ game.eco }}</span> {% endif %}{{ game.opening|default:"–" }}</td>
+          <td>{% if game.url %}<a href="{{ game.url }}" rel="noopener noreferrer">Lichess</a>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">Ainda não há partidas para este jogador.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -49,6 +49,14 @@ class Player(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def display_name(self) -> str:
+        """FIDE writes 'Carlsen, Magnus'; pages show 'Magnus Carlsen'."""
+        surname, comma, given = self.name.partition(",")
+        if comma and "," not in given and given.strip():
+            return f"{given.strip()} {surname.strip()}"
+        return self.name
+
 
 class PlayerAccount(models.Model):
     """An account of a player on an online platform (a player can have several)."""
@@ -67,3 +75,11 @@ class PlayerAccount(models.Model):
 
     def __str__(self):
         return f"{self.username} ({self.get_platform_display()})"
+
+    @property
+    def profile_url(self) -> str:
+        if self.platform == Platform.LICHESS:
+            return f"https://lichess.org/@/{self.username}"
+        if self.platform == Platform.CHESSCOM:
+            return f"https://www.chess.com/member/{self.username}"
+        return ""

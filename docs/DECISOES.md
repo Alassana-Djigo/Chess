@@ -35,5 +35,16 @@ Chess.com pede que as ferramentas sejam claramente diferentes em aspecto e nome.
 ## Pendentes
 
 - Nome do produto.
-- Idioma da interface (hoje `en-us` por defeito do Django).
+- Idioma da interface (hoje o texto está em português, escrito directamente nos templates).
 - Licença do código.
+
+## Interface (Fase 1, passo 4)
+
+- As páginas são geradas pelo Django (templates), sem JavaScript nem ferramentas de front-end.
+  Um front-end separado fica para quando o tabuleiro ao vivo o justificar.
+- O texto da interface está em português, escrito directamente nos templates. Quando decidirmos os
+  idiomas, passa para o sistema de traduções do Django.
+- O nome «Chess Stats» é provisório.
+- Os tokens da paleta A estão no topo de `web/static/web/site.css`. O dourado só marca o que está
+  activo (o separador escolhido) ou ao vivo (a partida em curso).
+- V, E e D distinguem-se pela forma (cheio, contorno, tracejado) e não só pela cor.

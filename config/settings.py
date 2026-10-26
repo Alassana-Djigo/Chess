@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "player.apps.PlayerConfig",
     "tournaments.apps.TournamentsConfig",
     "core.apps.CoreConfig",
+    "web.apps.WebConfig",
 ]
 
 MIDDLEWARE = [

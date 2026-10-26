@@ -113,3 +113,16 @@ ratings e as partidas recentes.
   categoria é sempre gravado com a data de hoje.
 - Para a fase do tempo real: os endpoints de Broadcasts (torneios presenciais) exigem um token com
   a permissão `study:read`.
+
+## 9. Resolução (Fase 1, passo 4)
+
+A ficha do jogador (`/players/<id>/`), a pesquisa e a página inicial são as primeiras páginas do
+site. A lógica de consulta (`web/services.py`) está separada das vistas e do gráfico
+(`web/charts.py`), e tem testes próprios.
+
+- O número de consultas à base de dados da ficha não cresce com o número de partidas (há um teste
+  que o garante).
+- Os adversários criados pela importação da Lichess aparecem como jogadores com o nome de
+  utilizador, até serem ligados a uma pessoa real.
+- `Player.display_name` mostra «Magnus Carlsen» para o nome «Carlsen, Magnus» da FIDE; o nome
+  guardado não muda.
