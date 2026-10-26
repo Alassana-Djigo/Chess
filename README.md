@@ -4,8 +4,9 @@ Plataforma de estatísticas e probabilidades de xadrez, no espírito dos grandes
 estatísticas desportivas (futebol, basquetebol), para comentadores, streamers e quem
 acompanha xadrez com olhar analítico. Mostra probabilidades e estatísticas; **não mostra odds**.
 
-> Estado: **Fase 0 concluída** (fundação do projecto). Ainda não há páginas públicas nem
-> integrações com APIs. Ver o [roadmap](#roadmap), [docs/DECISOES.md](docs/DECISOES.md) e [docs/AUDITORIA.md](docs/AUDITORIA.md).
+> Estado: **Fase 1 em curso**. Já existem a importação da lista da FIDE, a ligação a contas da
+> Lichess e a primeira página (a ficha do jogador). Ainda não há tempo real. Ver o
+> [roadmap](#roadmap), [docs/DECISOES.md](docs/DECISOES.md) e [docs/AUDITORIA.md](docs/AUDITORIA.md).
 
 ## Stack
 
@@ -64,6 +65,20 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver         # http://127.0.0.1:8000/admin/
 ```
+
+## O site
+
+Depois de importar jogadores (e, se quiseres, de ligar uma conta da Lichess), arranca o servidor
+com `python manage.py runserver` e abre http://127.0.0.1:8000/:
+
+| Página | Endereço | O que mostra |
+| ------ | -------- | ------------ |
+| Início | `/` | Os melhores ratings clássicos da FIDE, na lista mais recente importada. |
+| Pesquisa | `/players/?q=carlsen` | Jogadores por nome (em qualquer ordem) ou por FIDE ID. |
+| Ficha do jogador | `/players/<id>/` | Ratings por fonte e ritmo com gráfico, resultados (total, por cor e por ritmo), forma recente, aberturas mais jogadas e partidas recentes. |
+
+O gráfico escolhe-se pelos separadores de rating (`?source=lichess&category=blitz`). As páginas são
+geradas pelo Django, sem JavaScript, e seguem o modo claro ou escuro do sistema.
 
 ## Importar jogadores da FIDE
 
@@ -139,12 +154,13 @@ O CI corre exactamente isto, contra um PostgreSQL, em cada pull request e em cad
 | `tournaments`     | Torneios                                              |
 | `history_rating`  | Histórico de ratings                                  |
 | `providers`       | Clientes das fontes externas (Lichess); pacote simples, sem models |
+| `web`             | Páginas do site: início, pesquisa e ficha do jogador  |
 
 ## Roadmap
 
 0. **Fundação** (feito): limpeza, ambiente reprodutível, testes, CI, auditoria dos models.
-1. **Dados**: esquema unificado, identidade do jogador (FIDE + Lichess + Chess.com),
-   importação da lista FIDE, primeiro adaptador de API, página de um jogador.
+1. **Dados** (em curso): esquema unificado, importação da lista FIDE, ligação a contas da
+   Lichess e ficha do jogador (feitos); falta a Chess.com.
 2. **Estatísticas**: head-to-head, aberturas, replay animado de partidas.
 3. **Tempo real**: Lichess TV e Broadcasts, WebSocket, tabuleiro animado com barra de avaliação.
 4. **Torneios e probabilidades**: classificações, previsões, comparador.

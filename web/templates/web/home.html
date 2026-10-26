@@ -1,0 +1,31 @@
+{% extends "web/base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Estatísticas de xadrez</h1>
+  <p class="lead">Ratings, resultados e aberturas de cada jogador, para quem comenta e acompanha xadrez com olhar analítico.</p>
+</section>
+
+<section>
+  <h2>Melhores ratings clássicos da FIDE{% if period %} <span class="muted">· lista de {{ period|date:"m/Y" }}</span>{% endif %}</h2>
+  {% if top %}
+  <div class="table-wrap">
+    <table class="data">
+      <thead><tr><th class="num">#</th><th>Jogador</th><th>Federação</th><th class="num">Rating</th></tr></thead>
+      <tbody>
+        {% for row in top %}
+        <tr>
+          <td class="num">{{ forloop.counter }}</td>
+          <td><a href="{% url 'player_detail' row.player.pk %}">{% if row.player.title %}<span class="title">{{ row.player.title }}</span> {% endif %}{{ row.player.display_name }}</a></td>
+          <td>{{ row.player.federation|default:"–" }}</td>
+          <td class="num strong">{{ row.rating }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="empty">Ainda não há ratings da FIDE importados.</p>
+  {% endif %}
+  <p class="muted small">{{ player_count }} jogadores na base de dados.</p>
+</section>
+{% endblock %}

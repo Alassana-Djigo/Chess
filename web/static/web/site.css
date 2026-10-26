@@ -1,0 +1,127 @@
+/* Marfim e ébano: duas cores como um tabuleiro. O dourado só marca o que está ao vivo ou activo. */
+:root {
+  --ivory: #ede6d6;
+  --ebony: #2b2b30;
+  --accent: #c8a24a;
+  --bg: var(--ivory);
+  --fg: var(--ebony);
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: var(--ebony); --fg: var(--ivory); }
+}
+:root {
+  --surface: color-mix(in srgb, var(--fg) 6%, var(--bg));
+  --border: color-mix(in srgb, var(--fg) 20%, var(--bg));
+  --muted: color-mix(in srgb, var(--fg) 62%, var(--bg));
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: inherit; text-decoration-color: var(--muted); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--accent); }
+h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .4rem; }
+h2 { font-size: 1.15rem; margin: 2rem 0 .75rem; }
+h3 { font-size: 1rem; margin: 1.5rem 0 .5rem; }
+.container { max-width: 960px; margin: 0 auto; padding: 0 1.25rem; }
+.muted { color: var(--muted); }
+.small { font-size: .875rem; }
+.strong { font-weight: 600; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.empty { color: var(--muted); padding: 1rem 0; }
+
+/* Cabeçalho com a faixa de tabuleiro */
+.site-header { border-bottom: 1px solid var(--border); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: .9rem; padding-bottom: .9rem; flex-wrap: wrap; }
+.brand { display: inline-flex; align-items: center; gap: .6rem; font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+.mark {
+  width: 22px; height: 22px; border: 1px solid var(--fg);
+  background: repeating-conic-gradient(var(--fg) 0 25%, var(--bg) 0 50%) 0 0 / 22px 22px;
+}
+.strip {
+  height: 16px;
+  background: repeating-conic-gradient(var(--fg) 0 25%, var(--bg) 0 50%) 0 0 / 16px 16px;
+}
+.search { display: flex; gap: .5rem; flex: 1 1 280px; max-width: 420px; }
+.search input {
+  flex: 1; min-width: 0; padding: .5rem .7rem; font: inherit;
+  color: var(--fg); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.search input:focus-visible, .search button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.search button {
+  padding: .5rem .9rem; font: inherit; cursor: pointer; border-radius: var(--radius);
+  color: var(--bg); background: var(--fg); border: 1px solid var(--fg);
+}
+
+.hero { padding: 2.25rem 0 .5rem; }
+.lead { color: var(--muted); max-width: 40rem; margin: 0; }
+
+/* Tabelas */
+.table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+table.data { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.data th, .data td { padding: .55rem .8rem; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.data thead th { font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+.data tbody tr:last-child > * { border-bottom: 0; }
+.data tbody th { font-weight: 500; }
+.data td.num, .data th.num { text-align: right; }
+.title { font-weight: 700; font-size: .8em; letter-spacing: .03em; color: var(--muted); }
+
+/* Ficha do jogador */
+.profile-head { display: flex; justify-content: space-between; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; padding: 2rem 0 .25rem; }
+.profile-head h1 .title { font-size: .55em; vertical-align: .25em; }
+.facts { display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin: 0; color: var(--muted); }
+.accounts { list-style: none; margin: .4rem 0 0; padding: 0; display: flex; flex-direction: column; gap: .2rem; font-size: .95rem; }
+
+.tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+.tabs a {
+  display: flex; flex-direction: column; min-width: 7.5rem; padding: .5rem .8rem; text-decoration: none;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface);
+  border-bottom: 3px solid var(--border);
+}
+.tabs a[aria-current="page"] { border-color: var(--fg); border-bottom-color: var(--accent); }
+.tab-label { font-size: .75rem; color: var(--muted); }
+.tab-value { font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.chart { margin: 0; padding: .75rem .75rem .5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart .grid { stroke: var(--border); stroke-width: 1; }
+.chart .axis { fill: var(--muted); font-size: 11px; }
+.chart .line { fill: none; stroke: var(--fg); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .area { fill: var(--fg); opacity: .07; }
+.chart .dot { fill: var(--bg); stroke: var(--fg); stroke-width: 2; }
+.chart figcaption { display: flex; justify-content: space-between; margin-top: .25rem; padding-left: 52px; font-size: .8rem; color: var(--muted); }
+
+/* Resultados: V, E, D lêem-se pela forma, não só pela cor */
+.chip {
+  display: inline-flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem;
+  font-size: .8rem; font-weight: 700; border-radius: 4px; border: 1px solid var(--fg);
+}
+.chip.win { background: var(--fg); color: var(--bg); }
+.chip.draw { background: transparent; }
+.chip.loss { border-style: dashed; border-color: var(--muted); color: var(--muted); }
+.chip.live { background: var(--accent); border-color: var(--accent); color: var(--ebony); }
+.form-line { display: flex; align-items: center; flex-wrap: wrap; gap: .3rem; margin: 0 0 .9rem; }
+.form-line .muted { margin-right: .5rem; }
+.square { display: inline-block; width: 14px; height: 14px; border: 1px solid var(--fg); border-radius: 2px; vertical-align: middle; }
+.square.white { background: var(--ivory); }
+.square.black { background: var(--ebony); }
+
+.site-footer { margin-top: 3rem; padding-top: 1rem; padding-bottom: 2rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
+
+/* Ecrãs pequenos: o SVG encolhe com a largura, por isso o texto do gráfico cresce */
+@media (max-width: 600px) {
+  h1 { font-size: 1.6rem; }
+  .data { font-size: .88rem; }
+  .data tbody th { white-space: normal; }
+  .data th, .data td { padding: .5rem .35rem; }
+  .data thead th { font-size: .7rem; letter-spacing: 0; }
+  .chart .axis { font-size: 18px; }
+  .chart figcaption { padding-left: 0; }
+  .tabs a { flex: 1 1 calc(50% - .5rem); }
+}

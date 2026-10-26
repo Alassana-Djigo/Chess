@@ -1,0 +1,30 @@
+{% load static %}<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>{% block title %}Chess Stats{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'web/site.css' %}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container bar">
+      <a class="brand" href="{% url 'home' %}"><span class="mark" aria-hidden="true"></span>Chess Stats</a>
+      <form class="search" action="{% url 'player_search' %}" method="get" role="search">
+        <input type="search" name="q" value="{{ query|default:'' }}" placeholder="Procurar jogador ou FIDE ID" aria-label="Procurar jogador">
+        <button type="submit">Procurar</button>
+      </form>
+    </div>
+    <div class="strip" aria-hidden="true"></div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="container site-footer">
+    <p>Dados: lista mensal de ratings da FIDE e partidas da Lichess. Projecto em desenvolvimento.</p>
+  </footer>
+</body>
+</html>

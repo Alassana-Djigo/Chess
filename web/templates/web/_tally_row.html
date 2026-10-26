@@ -1,0 +1,8 @@
+<tr>
+  <th scope="row">{{ label }}</th>
+  <td>{{ tally.games }}</td>
+  <td>{{ tally.wins }}</td>
+  <td>{{ tally.draws }}</td>
+  <td>{{ tally.losses }}</td>
+  <td>{% if tally.score_percent is None %}&ndash;{% else %}{{ tally.score_percent }}%{% endif %}</td>
+</tr>
