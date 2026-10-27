@@ -13,7 +13,15 @@ from player.fide import FIDE_LIST_URL, READ_ERRORS, FidePlayer, download_list, i
 from player.models import Player
 
 BATCH_SIZE = 2000
-PLAYER_FIELDS = ["name", "federation", "birth_year", "title", "women_title", "updated_at"]
+PLAYER_FIELDS = [
+    "name",
+    "federation",
+    "birth_year",
+    "title",
+    "women_title",
+    "is_active",
+    "updated_at",
+]
 DEFAULT_DOWNLOAD = "players_list_xml.zip"
 
 
@@ -36,6 +44,7 @@ def import_batch(players: list[FidePlayer], period: date) -> tuple[int, int, int
                     birth_year=p.birth_year,
                     title=p.title,
                     women_title=p.women_title,
+                    is_active=p.is_active,
                 )
                 for p in unique.values()
             ],

@@ -40,6 +40,12 @@ class Player(models.Model):
     fide_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     title = models.CharField(max_length=3, choices=Title, blank=True)
     women_title = models.CharField(max_length=3, choices=WomenTitle, blank=True)
+    is_active = models.BooleanField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="From the FIDE list: False after a year without rated games. Empty if unknown.",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

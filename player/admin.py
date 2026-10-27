@@ -11,6 +11,6 @@ class PlayerAccountInline(admin.TabularInline):
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
     search_fields = ["name", "fide_id"]
-    list_display = ["name", "title", "women_title", "federation", "fide_id"]
-    list_filter = ["title", "women_title", "federation"]
+    list_display = ["name", "title", "women_title", "federation", "fide_id", "is_active"]
+    list_filter = ["is_active", "title", "women_title", "federation"]
     inlines = [PlayerAccountInline]

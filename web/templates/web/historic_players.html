@@ -1,0 +1,35 @@
+{% extends "web/base.html" %}
+{% block title %}Todos os tempos · Chess Stats{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Todos os tempos</h1>
+  <p class="lead">Jogadores que a FIDE marca como inactivos, isto é, sem partidas avaliadas há mais de um ano. Não aparecem nas listas principais.</p>
+</section>
+
+{% if page.object_list %}
+<div class="table-wrap">
+  <table class="data">
+    <thead><tr><th>Jogador</th><th>Federação</th><th>Nascido</th><th class="num">Melhor rating clássico</th></tr></thead>
+    <tbody>
+      {% for player in page.object_list %}
+      <tr>
+        <td><a href="{% url 'player_detail' player.pk %}">{% if player.title %}<span class="title">{{ player.title }}</span> {% endif %}{{ player.display_name }}</a></td>
+        <td>{{ player.federation|default:"–" }}</td>
+        <td>{{ player.birth_year|default:"–" }}</td>
+        <td class="num strong">{{ player.peak_classical|default:"–" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if page.paginator.num_pages > 1 %}
+<nav class="pager" aria-label="Páginas">
+  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">← Anterior</a>{% else %}<span></span>{% endif %}
+  <span class="muted">Página {{ page.number }} de {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a href="?page={{ page.next_page_number }}">Seguinte →</a>{% else %}<span></span>{% endif %}
+</nav>
+{% endif %}
+{% else %}
+<p class="empty">Ainda não há jogadores inactivos na base de dados.</p>
+{% endif %}
+{% endblock %}

@@ -18,6 +18,7 @@ Decisões de Outubro de 2026. Num chat novo, pede para ler este ficheiro no GitH
 - Titled Tuesday: a API pode não o listar pelo nome. Verificar na primeira chamada real.
 
 ## Trabalho técnico que isto exige
-- Guardar o estado activo/inactivo da FIDE (o campo `flag`, hoje descartado).
+- (feito) Guardar o estado activo/inactivo da FIDE (o campo `flag`).
+- Jogadores históricos que já não constam das listas actuais (Fischer, Kasparov): fonte a escolher. A OlimpBase tem listas desde os anos 70; ver os termos de uso antes.
 - Guardar o número de lances de cada partida, para os recordes de duração.
 - Escolher a fonte das partidas presenciais e dos jogadores históricos.

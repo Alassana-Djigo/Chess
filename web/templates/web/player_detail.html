@@ -7,6 +7,7 @@
     <p class="facts">
       {% if player.women_title %}<span>{{ player.women_title }}</span>{% endif %}
       {% if player.federation %}<span>{{ player.federation }}</span>{% endif %}
+      {% if player.is_active is False %}<span>Inactivo na FIDE</span>{% endif %}
       {% if player.birth_year %}<span>Nascido em {{ player.birth_year }}</span>{% endif %}
       {% if player.fide_id %}<span>FIDE ID {{ player.fide_id }}</span>{% endif %}
     </p>

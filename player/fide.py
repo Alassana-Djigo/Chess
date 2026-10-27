@@ -49,6 +49,12 @@ class FidePlayer:
     title: str
     women_title: str
     ratings: dict[TimeCategory, int]
+    is_active: bool = True
+
+
+def is_active_flag(flag: str) -> bool:
+    """FIDE flags: 'i' inactive, 'wi' woman inactive, 'w' woman active, empty active."""
+    return not flag.strip().lower().endswith("i")
 
 
 def clean_name(raw: str) -> str:
@@ -114,6 +120,7 @@ def parse_player(element: ElementTree.Element) -> FidePlayer | None:
         title=title,
         women_title=women_title,
         ratings=ratings,
+        is_active=is_active_flag(_text(element, "flag")),
     )
 
 
