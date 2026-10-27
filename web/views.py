@@ -1,9 +1,11 @@
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render
 
 from player.models import Player
 
 from .charts import build_chart
 from .services import (
+    historic_players,
     latest_ratings,
     pick_series,
     rating_series,
@@ -21,6 +23,12 @@ def home(request):
         "web/home.html",
         {"top": top, "period": period, "player_count": Player.objects.count()},
     )
+
+
+def historic(request):
+    paginator = Paginator(historic_players(), 50)
+    page = paginator.get_page(request.GET.get("page"))
+    return render(request, "web/historic_players.html", {"page": page})
 
 
 def player_search(request):

@@ -3,7 +3,7 @@
 from dataclasses import dataclass, field
 from datetime import date
 
-from django.db.models import Max, OuterRef, Q, Subquery
+from django.db.models import Case, F, IntegerField, Max, OuterRef, Q, Subquery, Value, When
 
 from core.choices import Outcome, Source, TimeCategory
 from history_rating.models import HistoryRating
@@ -232,7 +232,27 @@ def search_players(query: str, limit: int = 50):
         condition &= Q(name__icontains=word)
     if query.isdigit():
         condition |= Q(fide_id=int(query))
-    return list(_with_fide_rating(Player.objects.filter(condition)).order_by("name")[:limit])
+    activity = Case(
+        When(is_active=True, then=Value(0)),
+        When(is_active=False, then=Value(2)),
+        default=Value(1),
+        output_field=IntegerField(),
+    )
+    players = _with_fide_rating(Player.objects.filter(condition)).annotate(activity=activity)
+    return list(players.order_by("activity", "name")[:limit])
+
+
+def historic_players():
+    """Players FIDE marks as inactive, the highest known classical rating first."""
+    peak = Max(
+        "rating_history__rating",
+        filter=Q(
+            rating_history__source=Source.FIDE,
+            rating_history__time_category=TimeCategory.CLASSICAL,
+        ),
+    )
+    players = Player.objects.filter(is_active=False).annotate(peak_classical=peak)
+    return players.order_by(F("peak_classical").desc(nulls_last=True), "name")
 
 
 def top_rated(limit: int = 20) -> tuple[list[HistoryRating], date | None]:
@@ -241,5 +261,6 @@ def top_rated(limit: int = 20) -> tuple[list[HistoryRating], date | None]:
     latest = base.aggregate(latest=Max("rating_date"))["latest"]
     if latest is None:
         return [], None
-    rows = base.filter(rating_date=latest).select_related("player")
+    rows = base.filter(rating_date=latest).exclude(player__is_active=False)
+    rows = rows.select_related("player")
     return list(rows.order_by("-rating", "player__name")[:limit]), latest
