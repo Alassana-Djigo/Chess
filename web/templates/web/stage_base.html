@@ -1,0 +1,25 @@
+{% load static %}<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>{% block title %}Chess Stats{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'web/stage.css' %}">
+</head>
+<body class="stage">
+  <header class="topbar">
+    <a class="brand" href="{% url 'home' %}"><span class="mark" aria-hidden="true"></span>Chess Stats</a>
+    <nav aria-label="Secções">
+      <a href="{% url 'home' %}">Activos</a>
+      <a href="{% url 'historic_players' %}">Todos os tempos</a>
+      <a href="{% url 'versus_form' %}"{% block nav_versus %}{% endblock %}>Confronto</a>
+    </nav>
+  </header>
+  {% block content %}{% endblock %}
+  <footer class="foot">Presencial: lista mensal de ratings da FIDE. Online: Chess.com e Lichess.</footer>
+</body>
+</html>

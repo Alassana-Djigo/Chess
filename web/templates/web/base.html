@@ -11,7 +11,7 @@
   <header class="site-header">
     <div class="container bar">
       <a class="brand" href="{% url 'home' %}"><span class="mark" aria-hidden="true"></span>Chess Stats</a>
-      <nav class="mainnav" aria-label="Secções"><a href="{% url 'home' %}">Activos</a><a href="{% url 'historic_players' %}">Todos os tempos</a></nav>
+      <nav class="mainnav" aria-label="Secções"><a href="{% url 'home' %}">Activos</a><a href="{% url 'historic_players' %}">Todos os tempos</a><a href="{% url 'versus_form' %}">Confronto</a></nav>
       <form class="search" action="{% url 'player_search' %}" method="get" role="search">
         <input type="search" name="q" value="{{ query|default:'' }}" placeholder="Procurar jogador ou FIDE ID" aria-label="Procurar jogador">
         <button type="submit">Procurar</button>

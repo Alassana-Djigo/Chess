@@ -76,6 +76,7 @@ com `python manage.py runserver` e abre http://127.0.0.1:8000/:
 | Início | `/` | Os melhores ratings clássicos da FIDE, na lista mais recente importada. |
 | Pesquisa | `/players/?q=carlsen` | Jogadores por nome (em qualquer ordem) ou por FIDE ID. |
 | Todos os tempos | `/todos-os-tempos/` | Os jogadores que a FIDE marca como inactivos, com o melhor rating clássico conhecido. Não aparecem nas listas principais. |
+| Confronto | `/confronto/` | Dois jogadores lado a lado: ratings FIDE (presencial) e online (só rápido e blitz), resultados entre os dois e três números-chave. Filtro por modo com `?modo=presencial` ou `?modo=online`. |
 | Ficha do jogador | `/players/<id>/` | Ratings por fonte e ritmo com gráfico, resultados (total, por cor e por ritmo), forma recente, aberturas mais jogadas e partidas recentes. |
 
 O gráfico escolhe-se pelos separadores de rating (`?source=lichess&category=blitz`). As páginas são

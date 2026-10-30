@@ -126,3 +126,17 @@ site. A lógica de consulta (`web/services.py`) está separada das vistas e do g
   utilizador, até serem ligados a uma pessoa real.
 - `Player.display_name` mostra «Magnus Carlsen» para o nome «Carlsen, Magnus» da FIDE; o nome
   guardado não muda.
+
+## 10. Resolução (Fase 2, confronto)
+
+O ecrã de confronto (`/confronto/<a>/<b>/`) usa o visual aprovado na maquete: ecrã dividido, nomes
+grandes, ratings lado a lado com barras e três números-chave. A lógica está em `web/versus.py` e
+tem testes próprios.
+
+- Presencial mostra os três ratings da FIDE. Online mostra só rápido e blitz (Chess.com e Lichess):
+  o clássico não se joga online e o bullet fica de fora.
+- Quem lidera cada linha fica marcado a dourado. Os valores que faltam aparecem como «–», sem
+  inventar nada.
+- As páginas antigas e esta usam folhas de estilo diferentes. Passar o resto do site para este
+  visual é trabalho por fazer.
+- O disco «VS» é estático de propósito: uma animação nele ficava mal pintada no browser de teste.
