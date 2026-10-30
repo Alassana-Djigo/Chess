@@ -63,6 +63,19 @@ class Player(models.Model):
             return f"{given.strip()} {surname.strip()}"
         return self.name
 
+    @property
+    def name_parts(self) -> tuple[str, str]:
+        """(given name, surname) for FIDE style names; (whole name, '') for anything else."""
+        surname, comma, given = self.name.partition(",")
+        if comma and "," not in given and given.strip():
+            return given.strip(), surname.strip()
+        return self.name, ""
+
+    @property
+    def short_name(self) -> str:
+        """The first name when we know it (Magnus), otherwise the whole name."""
+        return self.name_parts[0].split(" ")[0] if self.name_parts[1] else self.name
+
 
 class PlayerAccount(models.Model):
     """An account of a player on an online platform (a player can have several)."""

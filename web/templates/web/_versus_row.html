@@ -1,0 +1,7 @@
+<div class="vrow" style="--d:{{ forloop.counter0 }}">
+  <div class="v-a">{% if row.a is not None %}<span class="num" style="--t:{{ row.a }}"></span>{% else %}<span class="none">–</span>{% endif %}</div>
+  <div class="bar bar-a"><i{% if row.leader == "a" %} class="lead"{% endif %} style="width:{{ row.a_width }}%"></i></div>
+  <div class="v-label"><b>{{ row.label }}</b><small>{{ row.pool }}</small></div>
+  <div class="bar bar-b"><i{% if row.leader == "b" %} class="lead"{% endif %} style="width:{{ row.b_width }}%"></i></div>
+  <div class="v-b">{% if row.b is not None %}<span class="num" style="--t:{{ row.b }}"></span>{% else %}<span class="none">–</span>{% endif %}</div>
+</div>

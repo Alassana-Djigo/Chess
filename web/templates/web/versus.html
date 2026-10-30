@@ -1,0 +1,72 @@
+{% extends "web/stage_base.html" %}
+{% block title %}{{ a.player.display_name }} × {{ b.player.display_name }} · Chess Stats{% endblock %}
+{% block nav_versus %} aria-current="page"{% endblock %}
+{% block content %}
+<main>
+  <h1 class="sr-only">Confronto: {{ a.player.display_name }} contra {{ b.player.display_name }}</h1>
+
+  <section class="vs" aria-label="Os dois jogadores">
+    <div class="side side-a rise-l">
+      <div class="ghost" aria-hidden="true">{{ a.initials }}</div>
+      <p class="kicker">{% if a.player.title %}{{ a.player.title }}{% endif %}{% if a.player.federation %} · {{ a.player.federation }}{% endif %}</p>
+      <h2 class="name"><span>{{ a.given }}</span>{% if a.surname %}<span>{{ a.surname }}</span>{% endif %}</h2>
+      <p class="label">FIDE clássico</p>
+      <p class="big">{% if a.rating %}<span class="num" style="--t:{{ a.rating }}"></span>{% else %}–{% endif %}</p>
+      <p class="more"><a href="{% url 'player_detail' a.player.pk %}">Ver ficha</a></p>
+    </div>
+    <div class="side side-b rise-r">
+      <div class="ghost" aria-hidden="true">{{ b.initials }}</div>
+      <p class="kicker">{% if b.player.title %}{{ b.player.title }}{% endif %}{% if b.player.federation %} · {{ b.player.federation }}{% endif %}</p>
+      <h2 class="name"><span>{{ b.given }}</span>{% if b.surname %}<span>{{ b.surname }}</span>{% endif %}</h2>
+      <p class="label">FIDE clássico</p>
+      <p class="big">{% if b.rating %}<span class="num" style="--t:{{ b.rating }}"></span>{% else %}–{% endif %}</p>
+      <p class="more"><a href="{% url 'player_detail' b.player.pk %}">Ver ficha</a></p>
+    </div>
+    <div class="disc" aria-hidden="true">VS</div>
+  </section>
+
+  <div class="wrap">
+    <nav class="chips" aria-label="Filtrar por modo">
+      {% for key, label in modes %}<a href="?modo={{ key }}"{% if key == mode %} aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
+    </nav>
+
+    {% if mode != "online" %}
+    <section class="block">
+      <h2 class="display">Presencial · rating FIDE</h2>
+      {% for row in otb %}{% include "web/_versus_row.html" %}{% empty %}<p class="empty">Nenhum dos dois tem ratings da FIDE na base de dados.</p>{% endfor %}
+    </section>
+    {% endif %}
+
+    {% if mode != "presencial" %}
+    <section class="block">
+      <h2 class="display">Online</h2>
+      <p class="hint">Só rápido e blitz: o clássico não se joga online.</p>
+      {% for row in online %}{% include "web/_versus_row.html" %}{% empty %}<p class="empty">Ainda não há ratings online para nenhum dos dois. Liga uma conta da Lichess ou da Chess.com a cada jogador.</p>{% endfor %}
+    </section>
+    {% endif %}
+
+    <section class="block">
+      <h2 class="display">O que os números dizem</h2>
+      <div class="insights">
+        {% for insight in insights %}
+        <div class="insight" style="--d:{{ forloop.counter0 }}"><div class="figure">{{ insight.figure }}</div><p>{{ insight.text }}</p></div>
+        {% endfor %}
+      </div>
+    </section>
+
+    {% if h2h.recent %}
+    <section class="block">
+      <h2 class="display">Últimas partidas entre os dois</h2>
+      <p class="hint">Resultado visto por {{ a.player.short_name }}.</p>
+      <ul class="meetings">
+        {% for meeting in h2h.recent %}
+        <li><span class="res res-{{ meeting.result }}">{% if meeting.result == "W" %}V{% elif meeting.result == "D" %}E{% else %}D{% endif %}</span>
+          <span>{{ meeting.date|date:"d/m/Y" }} · {{ meeting.category_label }} · {% if meeting.online %}online{% else %}presencial{% endif %}</span>
+          {% if meeting.url %}<a href="{{ meeting.url }}" rel="noopener noreferrer">Lichess</a>{% endif %}</li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}

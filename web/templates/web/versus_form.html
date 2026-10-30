@@ -1,0 +1,18 @@
+{% extends "web/stage_base.html" %}
+{% block title %}Confronto · Chess Stats{% endblock %}
+{% block nav_versus %} aria-current="page"{% endblock %}
+{% block content %}
+<main class="formpage">
+  <h1 class="display">Quem enfrenta quem?</h1>
+  <p class="lead">Escreve dois nomes (ou FIDE IDs) e vê os ratings, os resultados e os números lado a lado.</p>
+  {% if problems %}
+  <ul class="problems" role="alert">{% for problem in problems %}<li>{{ problem }}</li>{% endfor %}</ul>
+  {% endif %}
+  <form class="pair" action="{% url 'versus_form' %}" method="get">
+    <label>Jogador A<input type="text" name="a" value="{{ query_a }}" placeholder="ex.: carlsen" autocomplete="off" required></label>
+    <span class="vsmini" aria-hidden="true">VS</span>
+    <label>Jogador B<input type="text" name="b" value="{{ query_b }}" placeholder="ex.: nakamura" autocomplete="off" required></label>
+    <button type="submit">Comparar</button>
+  </form>
+</main>
+{% endblock %}
