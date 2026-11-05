@@ -8,6 +8,7 @@
   <section class="vs" aria-label="Os dois jogadores">
     <div class="side side-a rise-l">
       <div class="ghost" aria-hidden="true">{{ a.initials }}</div>
+      {% if a.avatar %}<img class="portrait" src="{{ a.avatar }}" alt="" width="128" height="128" referrerpolicy="no-referrer">{% endif %}
       <p class="kicker">{% if a.player.title %}{{ a.player.title }}{% endif %}{% if a.player.federation %} · {{ a.player.federation }}{% endif %}</p>
       <h2 class="name"><span>{{ a.given }}</span>{% if a.surname %}<span>{{ a.surname }}</span>{% endif %}</h2>
       <p class="label">FIDE clássico</p>
@@ -16,6 +17,7 @@
     </div>
     <div class="side side-b rise-r">
       <div class="ghost" aria-hidden="true">{{ b.initials }}</div>
+      {% if b.avatar %}<img class="portrait" src="{{ b.avatar }}" alt="" width="128" height="128" referrerpolicy="no-referrer">{% endif %}
       <p class="kicker">{% if b.player.title %}{{ b.player.title }}{% endif %}{% if b.player.federation %} · {{ b.player.federation }}{% endif %}</p>
       <h2 class="name"><span>{{ b.given }}</span>{% if b.surname %}<span>{{ b.surname }}</span>{% endif %}</h2>
       <p class="label">FIDE clássico</p>

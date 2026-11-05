@@ -43,6 +43,10 @@ def _hero(player: Player, pool: dict) -> dict:
         "surname": surname,
         "initials": initials,
         "rating": pool.get((Source.FIDE, TimeCategory.CLASSICAL)),
+        "avatar": player.accounts.exclude(avatar_url="")
+        .values_list("avatar_url", flat=True)
+        .first()
+        or "",
     }
 
 

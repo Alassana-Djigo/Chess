@@ -140,3 +140,16 @@ tem testes próprios.
 - As páginas antigas e esta usam folhas de estilo diferentes. Passar o resto do site para este
   visual é trabalho por fazer.
 - O disco «VS» é estático de propósito: uma animação nele ficava mal pintada no browser de teste.
+
+## 11. Resolução (Fase 2, Chess.com)
+
+O comando `sync_chesscom` liga uma conta da Chess.com a um jogador e importa o perfil, a
+fotografia, os ratings (rápido, blitz e bullet) e as partidas dos últimos meses.
+
+- A ligação nunca é adivinhada: a Chess.com publica o rating FIDE do perfil, não o número FIDE.
+- As partidas vêm dos arquivos mensais, lidos um a um (a API bloqueia pedidos em paralelo). O
+  histórico de rating constrói-se a partir delas.
+- Partidas do Titled Tuesday ficam ligadas a um torneio (`Tournament`, formato suíço) quando o
+  campo de torneio da partida contém `titled-tuesday`. **Por confirmar na primeira chamada real**:
+  o comando escreve quantas encontrou.
+- `PlayerAccount.avatar_url` guarda a fotografia de perfil, que o confronto já mostra.

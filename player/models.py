@@ -84,6 +84,7 @@ class PlayerAccount(models.Model):
     platform = models.CharField(max_length=10, choices=Platform)
     username = models.CharField(max_length=64)
     external_id = models.CharField(max_length=64, blank=True)
+    avatar_url = models.URLField(max_length=500, blank=True)
 
     class Meta:
         constraints = [

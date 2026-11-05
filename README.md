@@ -134,6 +134,34 @@ histórico completo, cria um token pessoal (Preferences, API access tokens) e p�
 data de hoje. Se a Lichess responder com um limite de pedidos (429), o comando espera um minuto
 e tenta outra vez.
 
+## Ligar contas da Chess.com
+
+    python manage.py sync_chesscom NomeNaChesscom --fide-id 5000001
+    python manage.py sync_chesscom NomeNaChesscom --create --months 6
+
+Funciona como o da Lichess, com duas diferenças. A Chess.com publica o **rating** FIDE do perfil e
+não o número FIDE, por isso a ligação nunca é adivinhada: indicas `--fide-id` ou `--player-id`, ou
+usas `--create`. E não há API de tempo real: os dados só se actualizam de 12 em 12 horas, no máximo.
+
+| Opção | Efeito |
+| ----- | ------ |
+| `--fide-id`, `--player-id` | Liga ao jogador com esse FIDE ID ou id da base de dados. |
+| `--create` | Cria o jogador se não encontrar nenhum. |
+| `--months` | Quantos meses de partidas ler, dos mais recentes (por defeito, 3). |
+| `--no-games`, `--no-ratings` | Salta as partidas ou os ratings. |
+
+Entram as partidas classificadas de xadrez standard em bullet, blitz e rápido; ficam de fora as
+partidas por correspondência (daily) e as variantes. O histórico de rating da Chess.com constrói-se
+a partir das partidas lidas (o rating depois da última partida de cada dia), mais o rating de hoje.
+A fotografia de perfil fica guardada e aparece no confronto. Os meses lêem-se um a um, como a
+Chess.com pede, e o comando mostra o progresso.
+
+O comando diz também quantas partidas do **Titled Tuesday** encontrou. Se disser que nenhuma, é
+sinal de que a Chess.com não o identifica pelo nome no campo de torneio das partidas.
+
+A Chess.com pede um contacto no pedido. Por defeito vai o endereço deste repositório; para pores o
+teu, define `CHESSCOM_CONTACT` no `.env`.
+
 ## Qualidade
 
 ```bash
@@ -155,7 +183,7 @@ O CI corre exactamente isto, contra um PostgreSQL, em cada pull request e em cad
 | `matches`         | Partidas                                              |
 | `tournaments`     | Torneios                                              |
 | `history_rating`  | Histórico de ratings                                  |
-| `providers`       | Clientes das fontes externas (Lichess); pacote simples, sem models |
+| `providers`       | Clientes das fontes externas (Lichess e Chess.com); pacote simples, sem models |
 | `web`             | Páginas do site: início, pesquisa e ficha do jogador  |
 
 ## Roadmap
