@@ -25,6 +25,8 @@
 .ghost { position: absolute; bottom: -1.5rem; font: 900 clamp(9rem, 17vw, 15rem)/.8 "Big Shoulders Display", Impact, sans-serif; color: transparent; -webkit-text-stroke: 2px; user-select: none; }
 .side-a .ghost { right: 14%; -webkit-text-stroke-color: rgba(237, 230, 214, .16); }
 .side-b .ghost { left: 14%; -webkit-text-stroke-color: rgba(43, 43, 48, .18); }
+.portrait { position: relative; display: block; width: 8rem; height: 8rem; margin: 0 0 1.25rem; border-radius: 50%; object-fit: cover; border: 3px solid currentColor; }
+.side-b .portrait { margin-left: auto; }
 .kicker { position: relative; margin: 0; font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }
 .name { position: relative; margin: .6rem 0 0; display: flex; flex-direction: column; font: 900 clamp(3.2rem, 9vw, 8rem)/.86 "Big Shoulders Display", Impact, sans-serif; letter-spacing: -.02em; text-transform: uppercase; overflow-wrap: anywhere; }
 .label { position: relative; margin: 2.25rem 0 0; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; opacity: .85; }

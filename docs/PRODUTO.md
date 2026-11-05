@@ -21,5 +21,6 @@ Decisões de Outubro de 2026. Num chat novo, pede para ler este ficheiro no GitH
 - (feito) Guardar o estado activo/inactivo da FIDE (o campo `flag`).
 - Jogadores históricos que já não constam das listas actuais (Fischer, Kasparov): fonte a escolher. A OlimpBase tem listas desde os anos 70; ver os termos de uso antes.
 - (feito) Ecrã de confronto entre dois jogadores (`/confronto/`), com o visual aprovado. Falta o carregamento com progresso real e as fotografias.
+- (feito) Adaptador da Chess.com (`sync_chesscom`): perfil, fotografia, ratings rápido e blitz, partidas e Titled Tuesday. O Titled Tuesday pelo nome está por confirmar na primeira chamada real.
 - Guardar o número de lances de cada partida, para os recordes de duração.
 - Escolher a fonte das partidas presenciais e dos jogadores históricos.
