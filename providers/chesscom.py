@@ -20,6 +20,8 @@ from player.fide import split_titles
 BASE_URL = "https://api.chess.com"
 DEFAULT_CONTACT = "https://github.com/Alassana-Djigo/Chess"
 RATE_LIMIT_WAIT = 30  # seconds
+FORBIDDEN_WAIT = 5  # seconds before retrying a 403
+MONTH_PAUSE = 1.0  # seconds between two monthly archives
 USERNAME_RE = re.compile(r"^[A-Za-z0-9_-]{3,50}$")
 ECO_HEADER_RE = re.compile(r'\[ECO "([A-E][0-9]{2})"\]')
 ECO_URL_HEADER_RE = re.compile(r'\[ECOUrl "([^"]+)"\]')
@@ -46,6 +48,10 @@ class ChesscomRateLimited(ChesscomError):
     """Chess.com kept answering 429 after the client waited."""
 
 
+class ChesscomForbidden(ChesscomError):
+    """Chess.com kept answering 403 (usually a temporary block) after the client waited."""
+
+
 class ChesscomClient:
     def __init__(
         self,
@@ -63,6 +69,7 @@ class ChesscomClient:
         self.sleep = sleep
         self.notify = notify
         self.max_retries = max_retries
+        self._months_read = 0
 
     def _get_json(self, url: str):
         for attempt in range(self.max_retries + 1):
@@ -84,6 +91,16 @@ class ChesscomClient:
                             f"Chess.com asked us to slow down; waiting {RATE_LIMIT_WAIT}s..."
                         )
                     self.sleep(RATE_LIMIT_WAIT)
+                    continue
+                if response.status_code == 403:
+                    if attempt == self.max_retries:
+                        raise ChesscomForbidden(
+                            f"Chess.com answered 403 (Forbidden) for {url}. This is usually a "
+                            "temporary block or a missing User-Agent: try again later."
+                        )
+                    if self.notify:
+                        self.notify(f"Chess.com answered 403; trying again in {FORBIDDEN_WAIT}s...")
+                    self.sleep(FORBIDDEN_WAIT)
                     continue
                 if response.status_code in (404, 410):
                     raise ChesscomNotFound(url)
@@ -115,6 +132,9 @@ class ChesscomClient:
         """The games of one monthly archive, as listed by `get_archives`."""
         if not url.startswith(f"{BASE_URL}/pub/player/"):
             raise ChesscomError(f"Unexpected archive address: {url}")
+        if self._months_read:
+            self.sleep(MONTH_PAUSE)  # be gentle between archive requests
+        self._months_read += 1
         return self._get_json(url).get("games", [])
 
 

@@ -271,7 +271,8 @@ class VersusPagesTests(TestCase):
         self.assertContains(response, "Só rápido e blitz")
         self.assertContains(response, "Lichess")
         self.assertContains(response, "O que os números dizem")
-        self.assertContains(response, 'class="lead"')  # the leading bar is marked
+        self.assertContains(response, 'class="leader"')  # the leading bar is marked
+        self.assertNotContains(response, 'class="lead"')  # that is the form's intro style
 
     def test_mode_filters(self):
         presencial = self.client.get(self.url(modo="presencial"))

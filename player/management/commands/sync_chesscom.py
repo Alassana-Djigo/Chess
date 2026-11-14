@@ -9,6 +9,7 @@ from providers.chesscom import (
     ChesscomClient,
     ChesscomError,
     ChesscomNotFound,
+    ChesscomRateLimited,
     is_titled_tuesday,
     parse_game,
     parse_profile,
@@ -68,6 +69,8 @@ class Command(BaseCommand):
             raise CommandError(str(error)) from error
         player = account.player
         self.stdout.write(f"Chess.com account {profile.username} -> {player} ({how}).")
+        photo = "saved" if account.avatar_url else "none on this Chess.com profile"
+        self.stdout.write(f"Photo: {photo}.")
 
         try:
             games = []
@@ -93,12 +96,30 @@ class Command(BaseCommand):
 
     def read_games(self, client, username, months):
         archives = client.get_archives(username)[-months:]
-        games = []
+        games, skipped = [], []
         for url in archives:
             label = "/".join(url.rstrip("/").rsplit("/", 2)[-2:])
             self.stdout.write(f"  reading {label}...")
-            games.extend(game for raw in client.get_month(url) if (game := parse_game(raw)))
-        self.stdout.write(f"  {len(games)} usable games in {len(archives)} month(s).")
+            try:
+                raw_games = client.get_month(url)
+            except ChesscomRateLimited:
+                raise  # we hit the limit: stop and let the user wait
+            except ChesscomError as error:
+                skipped.append(label)
+                self.stdout.write(self.style.WARNING(f"  skipped {label}: {error}"))
+                continue
+            games.extend(game for raw in raw_games if (game := parse_game(raw)))
+        if archives and len(skipped) == len(archives):
+            raise ChesscomError(f"Could not read any of the {len(archives)} month(s).")
+        if skipped:
+            self.stdout.write(
+                self.style.WARNING(
+                    f"  Skipped {len(skipped)} month(s): {', '.join(skipped)}. "
+                    "Run the command again later to fill them in."
+                )
+            )
+        read = len(archives) - len(skipped)
+        self.stdout.write(f"  {len(games)} usable games in {read} month(s).")
         return games
 
     def report_titled_tuesday(self, games):
