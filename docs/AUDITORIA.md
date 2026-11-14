@@ -153,3 +153,16 @@ fotografia, os ratings (rápido, blitz e bullet) e as partidas dos últimos mese
   campo de torneio da partida contém `titled-tuesday`. **Por confirmar na primeira chamada real**:
   o comando escreve quantas encontrou.
 - `PlayerAccount.avatar_url` guarda a fotografia de perfil, que o confronto já mostra.
+
+## 12. Correcções após o primeiro uso real
+
+- **Barras do confronto desalinhadas.** A classe `lead` das barras de quem lidera colidia com o estilo
+  `.lead` do parágrafo de introdução do formulário (margem de 2,5 rem, largura máxima e
+  transparência). As barras passaram a usar `leader`. Medido no browser: o desvio entre a barra e
+  os dígitos caiu de 19,5 px para 1 px ou menos.
+- **403 da Chess.com num mês.** Um 403 pontual (a Chess.com protege a API com um filtro que bloqueia
+  pedidos de forma intermitente) deitava abaixo a importação inteira. Agora o cliente repete após 5
+  segundos, há uma pausa de 1 segundo entre meses, e um mês que continue a falhar é saltado com um
+  aviso, mantendo os outros. Só se todos os meses falharem, ou se a Chess.com limitar os pedidos
+  (429), é que o comando pára.
+- `sync_chesscom` diz agora se o perfil tem fotografia (`Photo: saved.` ou `Photo: none ...`).

@@ -55,7 +55,7 @@
 .bar i { display: block; height: .6rem; background: var(--ivory); animation: grow 1s cubic-bezier(.2, .8, .2, 1) calc(1.1s + var(--d, 0) * .12s) backwards; }
 .bar-a i { transform-origin: right; }
 .bar-b i { transform-origin: left; }
-.bar i.lead { background: var(--accent); }
+.bar i.leader { background: var(--accent); }
 @keyframes grow { from { transform: scaleX(0); } }
 @keyframes up { from { transform: translateY(26px); opacity: 0; } }
 
