@@ -103,7 +103,9 @@ class ChesscomClient:
                     self.sleep(FORBIDDEN_WAIT)
                     continue
                 if response.status_code in (404, 410):
-                    raise ChesscomNotFound(url)
+                    raise ChesscomNotFound(
+                        f"Chess.com answered {response.status_code} (not found) for {url}"
+                    )
                 try:
                     response.raise_for_status()
                 except requests.HTTPError as error:

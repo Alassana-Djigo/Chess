@@ -95,7 +95,16 @@ class Command(BaseCommand):
             raise CommandError(str(error)) from error
 
     def read_games(self, client, username, months):
-        archives = client.get_archives(username)[-months:]
+        try:
+            archives = client.get_archives(username)[-months:]
+        except ChesscomNotFound:
+            self.stdout.write(
+                self.style.WARNING(
+                    f"  Chess.com has no game archive for {username} (it answered 'not found'). "
+                    "Games skipped; ratings will still be stored."
+                )
+            )
+            return []
         games, skipped = [], []
         for url in archives:
             label = "/".join(url.rstrip("/").rsplit("/", 2)[-2:])
