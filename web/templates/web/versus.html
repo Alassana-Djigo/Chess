@@ -43,6 +43,8 @@
     <section class="block">
       <h2 class="display">Online</h2>
       <p class="hint">Só rápido e blitz: o clássico não se joga online.</p>
+      <p class="hint">Contas ligadas — {{ a.player.short_name }}: {% for account in a.accounts %}{{ account.get_platform_display }} ({{ account.username }}){% if not forloop.last %}, {% endif %}{% empty %}nenhuma{% endfor %}; {{ b.player.short_name }}: {% for account in b.accounts %}{{ account.get_platform_display }} ({{ account.username }}){% if not forloop.last %}, {% endif %}{% empty %}nenhuma{% endfor %}.</p>
+      {% if one_sided %}<p class="hint">Numa linha com só um rating, o outro jogador não tem conta ligada nessa plataforma, ou a plataforma não publica os dados dele.</p>{% endif %}
       {% for row in online %}{% include "web/_versus_row.html" %}{% empty %}<p class="empty">Ainda não há ratings online para nenhum dos dois. Liga uma conta da Lichess ou da Chess.com a cada jogador.</p>{% endfor %}
     </section>
     {% endif %}

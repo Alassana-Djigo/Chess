@@ -166,3 +166,13 @@ fotografia, os ratings (rápido, blitz e bullet) e as partidas dos últimos mese
   aviso, mantendo os outros. Só se todos os meses falharem, ou se a Chess.com limitar os pedidos
   (429), é que o comando pára.
 - `sync_chesscom` diz agora se o perfil tem fotografia (`Photo: saved.` ou `Photo: none ...`).
+
+## 13. Conta que não publica dados (o caso do Magnus na Chess.com)
+
+Para a conta `MagnusCarlsen`, a Chess.com responde 200 ao perfil mas 404 às estatísticas e aos
+arquivos de partidas (confirmado com `curl`; o Hikaru responde 200 a tudo). Não se sabe a razão.
+
+- O `sync_chesscom` guarda a ligação e a fotografia, avisa que não há arquivo e continua.
+- O confronto passou a mostrar, na secção online, as contas ligadas a cada jogador, e explica
+  quando uma linha tem só um lado (conta não ligada nessa plataforma ou dados não publicados).
+- Para comparar online com a mesma fonte, o caminho é ligar ao Hikaru uma conta da Lichess.
