@@ -37,16 +37,15 @@ def versus_form(request):
 def _hero(player: Player, pool: dict) -> dict:
     given, surname = player.name_parts
     initials = (given[:1] + surname[:1]).upper() if surname else player.name[:2].upper()
+    accounts = list(player.accounts.order_by("platform", "username"))
     return {
         "player": player,
         "given": given,
         "surname": surname,
         "initials": initials,
         "rating": pool.get((Source.FIDE, TimeCategory.CLASSICAL)),
-        "avatar": player.accounts.exclude(avatar_url="")
-        .values_list("avatar_url", flat=True)
-        .first()
-        or "",
+        "accounts": accounts,
+        "avatar": next((account.avatar_url for account in accounts if account.avatar_url), ""),
     }
 
 
@@ -80,6 +79,7 @@ def versus(request, a, b):
         ],
         "otb": otb,
         "online": online,
+        "one_sided": any(row.a is None or row.b is None for row in online),
         "h2h": h2h,
         "insights": insights,
     }
