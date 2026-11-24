@@ -18,7 +18,7 @@ from .chesscom import (
     is_titled_tuesday,
     tournament_name,
 )
-from .lichess_sync import LinkError, _chosen_player
+from .lichess_sync import LinkError, _chosen_player, ensure_same_person
 
 
 def find_account(username: str) -> PlayerAccount | None:
@@ -35,6 +35,7 @@ def link_account(
     fide_id: int | None = None,
     player_id: int | None = None,
     create: bool = False,
+    force: bool = False,
 ) -> tuple[PlayerAccount, str]:
     """Tie the Chess.com account to a player and return (account, how it was linked).
 
@@ -53,6 +54,7 @@ def link_account(
             )
         player, how = account.player, "was already linked"
     elif chosen is not None:
+        ensure_same_person("Chess.com", profile.username, profile.name, chosen, force)
         player, how = chosen, "as you asked"
     elif create:
         player = Player.objects.create(

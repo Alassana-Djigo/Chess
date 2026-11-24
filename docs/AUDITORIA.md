@@ -176,3 +176,12 @@ arquivos de partidas (confirmado com `curl`; o Hikaru responde 200 a tudo). Não
 - O confronto passou a mostrar, na secção online, as contas ligadas a cada jogador, e explica
   quando uma linha tem só um lado (conta não ligada nessa plataforma ou dados não publicados).
 - Para comparar online com a mesma fonte, o caminho é ligar ao Hikaru uma conta da Lichess.
+
+## 14. Protecção contra ligações trocadas
+
+Ao ligar uma conta com `--fide-id` ou `--player-id`, o programa compara o nome do perfil (o `name`
+da Chess.com, o `realName` da Lichess) com o do jogador escolhido e recusa se não partilharem
+nenhuma palavra. A opção `--force` ignora a verificação. Perfis sem nome não são verificados.
+
+Motivo: um número de exemplo (`123`) foi usado por engano e ligou a conta do Hikaru a outro
+jogador, com 1442 partidas e 69 ratings atribuídos à pessoa errada.

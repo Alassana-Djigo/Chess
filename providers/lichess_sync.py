@@ -10,6 +10,7 @@ from history_rating.models import HistoryRating
 from matches.models import Match
 from player.models import Platform, Player, PlayerAccount
 
+from .identity import names_compatible
 from .lichess import LichessGame, LichessProfile, LichessSide
 
 
@@ -41,12 +42,25 @@ def _chosen_player(fide_id: int | None, player_id: int | None) -> Player | None:
     return None
 
 
+def ensure_same_person(
+    platform: str, username: str, claimed_name: str, player: Player, force: bool
+) -> None:
+    """Refuse a manual link when the name on the platform and the chosen player clearly differ."""
+    if force or names_compatible(claimed_name, player.name):
+        return
+    raise LinkError(
+        f"{platform} says {username} is '{claimed_name}', but you chose '{player.display_name}'. "
+        "If that really is the same person, run the command again with --force."
+    )
+
+
 def link_account(
     profile: LichessProfile,
     *,
     fide_id: int | None = None,
     player_id: int | None = None,
     create: bool = False,
+    force: bool = False,
 ) -> tuple[PlayerAccount, str]:
     """Tie the Lichess account to a player and return (account, how it was linked).
 
@@ -64,6 +78,7 @@ def link_account(
             )
         player, how = account.player, "was already linked"
     elif chosen is not None:
+        ensure_same_person("Lichess", profile.username, profile.real_name, chosen, force)
         player, how = chosen, "as you asked"
     elif profile.fide_id and (known := Player.objects.filter(fide_id=profile.fide_id).first()):
         player, how = known, f"through the FIDE id {profile.fide_id} published on Lichess"
