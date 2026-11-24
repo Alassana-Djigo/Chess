@@ -28,6 +28,11 @@ class Command(BaseCommand):
         parser.add_argument(
             "--create", action="store_true", help="Create the player if none can be found."
         )
+        parser.add_argument(
+            "--force",
+            action="store_true",
+            help="Link to the chosen player even if the names on the profile do not match.",
+        )
         parser.add_argument("--max-games", type=int, default=30, help="Recent games to import.")
         parser.add_argument("--no-games", action="store_true", help="Skip the games.")
         parser.add_argument("--no-ratings", action="store_true", help="Skip the ratings.")
@@ -60,6 +65,7 @@ class Command(BaseCommand):
                     fide_id=options["fide_id"],
                     player_id=options["player_id"],
                     create=options["create"],
+                    force=options["force"],
                 )
         except LinkError as error:
             raise CommandError(str(error)) from error
