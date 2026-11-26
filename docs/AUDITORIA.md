@@ -185,3 +185,18 @@ nenhuma palavra. A opção `--force` ignora a verificação. Perfis sem nome nã
 
 Motivo: um número de exemplo (`123`) foi usado por engano e ligou a conta do Hikaru a outro
 jogador, com 1442 partidas e 69 ratings atribuídos à pessoa errada.
+
+## 15. Classificações do Titled Tuesday
+
+A Chess.com identifica o Titled Tuesday pelo nome: o campo `tournament` das partidas traz um nome
+com `titled-tuesday` (confirmado em uso real: 108 partidas em 10 edições, em três meses de
+partidas do Hikaru). O endereço de cada torneio tem 11 rondas e a última traz a **classificação
+final de todos os jogadores**, com pontos. Ao contrário dos arquivos de partidas, não depende de o
+jogador os publicar (o Magnus não publica).
+
+- `TournamentResult` guarda os pontos e a posição (só por pontos, empates partilham a posição).
+- `sync_titled_tuesday` lê 3 pedidos por edição, em série e com pausa.
+- A lista `players` do endereço principal do torneio traz só 25 nomes e sem pontos: não serve.
+- Os nomes de utilizador resolvem-se pelas contas ligadas; os restantes ficam como jogadores
+  mínimos. Ligá-los a jogadores da FIDE (por nome e título) é trabalho por fazer.
+- O confronto mostra, em `Titled Tuesday`, os pontos e a posição nas últimas cinco edições.

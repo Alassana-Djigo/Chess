@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import F, Q
 
 from core.choices import Source
+from player.models import Player
 
 
 class Format(models.TextChoices):
@@ -57,3 +58,25 @@ class Tournament(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TournamentResult(models.Model):
+    """A player's final score in a tournament. Ties share the same placement."""
+
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="results")
+    player = models.ForeignKey(Player, on_delete=models.PROTECT, related_name="tournament_results")
+    points = models.DecimalField(max_digits=5, decimal_places=1)
+    placement = models.PositiveIntegerField(help_text="By points only, without tie-breaks.")
+    is_winner = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["tournament", "placement", "player"]
+        indexes = [models.Index(fields=["tournament", "placement"], name="result_placement_idx")]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["tournament", "player"], name="uniq_result_tournament_player"
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.player} {self.points} in {self.tournament}"

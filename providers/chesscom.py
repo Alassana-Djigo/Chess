@@ -9,7 +9,8 @@ import re
 import time
 from collections.abc import Callable
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
+from decimal import Decimal
 from urllib.parse import quote
 
 import requests
@@ -23,6 +24,7 @@ RATE_LIMIT_WAIT = 30  # seconds
 FORBIDDEN_WAIT = 5  # seconds before retrying a 403
 MONTH_PAUSE = 1.0  # seconds between two monthly archives
 USERNAME_RE = re.compile(r"^[A-Za-z0-9_-]{3,50}$")
+SLUG_RE = re.compile(r"^[a-z0-9-]{3,120}$")
 ECO_HEADER_RE = re.compile(r'\[ECO "([A-E][0-9]{2})"\]')
 ECO_URL_HEADER_RE = re.compile(r'\[ECOUrl "([^"]+)"\]')
 TIME_CONTROL_RE = re.compile(r"^(\d+)(?:\+(\d+))?$")
@@ -138,6 +140,18 @@ class ChesscomClient:
             self.sleep(MONTH_PAUSE)  # be gentle between archive requests
         self._months_read += 1
         return self._get_json(url).get("games", [])
+
+    def get_tournament(self, slug: str) -> dict:
+        """Details of a tournament, by the name Chess.com puts at the end of its address."""
+        if not SLUG_RE.match(slug):
+            raise ChesscomError(f"'{slug}' is not a valid tournament name.")
+        return self._get_json(f"{BASE_URL}/pub/tournament/{slug}")
+
+    def get_tournament_page(self, url: str) -> dict:
+        """A round or a group of a tournament, as listed in its details."""
+        if not url.startswith(f"{BASE_URL}/pub/tournament/"):
+            raise ChesscomError(f"Unexpected tournament address: {url}")
+        return self._get_json(url)
 
 
 @dataclass(frozen=True)
@@ -272,3 +286,55 @@ def ratings_from_games(username: str, games: list[ChesscomGame]) -> dict:
         if side.username.lower() == username.lower() and side.rating:
             points[(game.time_category, game.ended_at.date())] = side.rating
     return points
+
+
+@dataclass(frozen=True)
+class ChesscomEvent:
+    name: str
+    status: str  # "finished", "in_progress", ...
+    start: date | None
+    end: date | None
+    rounds: int | None
+    round_urls: list[str]
+    winner: str
+
+
+@dataclass(frozen=True)
+class ChesscomStanding:
+    username: str
+    points: Decimal
+    is_winner: bool
+
+
+def _day(epoch) -> date | None:
+    return datetime.fromtimestamp(epoch, tz=UTC).date() if epoch else None
+
+
+def parse_event(data: dict) -> ChesscomEvent:
+    settings = data.get("settings") or {}
+    round_urls = list(data.get("rounds") or [])
+    winners = [
+        p.get("username", "") for p in data.get("players") or [] if p.get("status") == "winner"
+    ]
+    return ChesscomEvent(
+        name=data.get("name") or "",
+        status=data.get("status") or "",
+        start=_day(data.get("start_time")),
+        end=_day(data.get("finish_time")),
+        rounds=settings.get("total_rounds") or len(round_urls) or None,
+        round_urls=round_urls,
+        winner=winners[0] if winners else "",
+    )
+
+
+def parse_standings(group: dict) -> list[ChesscomStanding]:
+    """The players of a round group with their points so far (the last round: the final score)."""
+    standings = []
+    for entry in group.get("players") or []:
+        username, points = entry.get("username"), entry.get("points")
+        if not username or points is None:
+            continue
+        standings.append(
+            ChesscomStanding(username, Decimal(str(points)), bool(entry.get("is_winner")))
+        )
+    return standings

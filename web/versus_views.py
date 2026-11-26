@@ -13,6 +13,8 @@ from .versus import (
     head_to_head,
     latest_pool_ratings,
     resolve_player,
+    titled_summary,
+    titled_tuesday,
 )
 
 
@@ -65,6 +67,7 @@ def versus(request, a, b):
     elif mode == "online":
         otb = []
     h2h = head_to_head(player_a, player_b)
+    titled = [] if mode == "presencial" else titled_tuesday(player_a, player_b)
     insights = build_insights(
         player_a, player_b, otb + online, replace(h2h, overall=h2h.for_mode(mode))
     )
@@ -81,6 +84,8 @@ def versus(request, a, b):
         "online": online,
         "one_sided": any(row.a is None or row.b is None for row in online),
         "h2h": h2h,
+        "titled": titled,
+        "titled_summary": titled_summary(titled),
         "insights": insights,
     }
     return render(request, "web/versus.html", context)
