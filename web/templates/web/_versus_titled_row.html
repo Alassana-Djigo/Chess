@@ -1,0 +1,7 @@
+<div class="vrow tt" style="--d:{{ forloop.counter0 }}">
+  <div class="v-a">{% if row.a_points is not None %}{{ row.a_points|floatformat:"-1" }}<span class="place">{{ row.a_place }}.º de {{ row.participants }}</span>{% else %}<span class="none">–</span>{% endif %}</div>
+  <div class="bar bar-a"><i{% if row.leader == "a" %} class="leader"{% endif %} style="width:{{ row.a_width }}%"></i></div>
+  <div class="v-label"><b>{{ row.label }}</b><small>{{ row.rounds }} rondas</small></div>
+  <div class="bar bar-b"><i{% if row.leader == "b" %} class="leader"{% endif %} style="width:{{ row.b_width }}%"></i></div>
+  <div class="v-b">{% if row.b_points is not None %}{{ row.b_points|floatformat:"-1" }}<span class="place">{{ row.b_place }}.º de {{ row.participants }}</span>{% else %}<span class="none">–</span>{% endif %}</div>
+</div>

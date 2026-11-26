@@ -162,6 +162,26 @@ sinal de que a Chess.com não o identifica pelo nome no campo de torneio das par
 A Chess.com pede um contacto no pedido. Por defeito vai o endereço deste repositório; para pores o
 teu, define `CHESSCOM_CONTACT` no `.env`.
 
+## Classificações do Titled Tuesday
+
+    python manage.py sync_titled_tuesday --recent 3
+    python manage.py sync_titled_tuesday --slug titled-tuesday-blitz-november-03-2026-31201855
+
+Lê a classificação final de cada edição, com os pontos de todos os jogadores, e guarda-a (modelo
+`TournamentResult`). Não precisa de arquivo público: funciona para qualquer jogador que tenha
+jogado, incluindo quem não publica as suas partidas.
+
+| Opção | Efeito |
+| ----- | ------ |
+| `--recent N` | Lê as N edições mais recentes que já estão na base de dados (por defeito, 3). Ficam lá depois de correres `sync_chesscom` para um jogador que as joga. |
+| `--slug NOME` | Lê uma edição em concreto, pelo nome que aparece no fim do endereço dela na Chess.com. Pode repetir-se. |
+| `--force` | Volta a ler edições cuja classificação já está guardada. |
+
+São 3 pedidos por edição, em série e com pausa de 1 segundo. A posição conta só os pontos, sem
+desempates (empatados partilham a posição). Os jogadores sem conta ligada ficam como jogadores
+mínimos, como os adversários das partidas. No confronto, a secção «Titled Tuesday» mostra os
+pontos e a posição de cada um nas últimas edições.
+
 ## Qualidade
 
 ```bash

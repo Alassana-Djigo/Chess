@@ -1,13 +1,15 @@
 """Head-to-head comparison of two players: ratings side by side, results and insights."""
 
 from dataclasses import dataclass, field
+from decimal import Decimal
 
-from django.db.models import Q
+from django.db.models import Count, Q
 
 from core.choices import Outcome, Source, TimeCategory
 from history_rating.models import HistoryRating
 from matches.models import Match
 from player.models import Player
+from tournaments.models import Tournament, TournamentResult
 
 from .services import CATEGORY_LABELS, SOURCE_LABELS, Tally, result_for, search_players
 
@@ -175,3 +177,98 @@ def build_insights(a: Player, b: Player, rows: list[VersusRow], h2h: HeadToHead)
     else:
         third = Insight("0", "partidas entre os dois na base de dados.")
     return [first, second, third]
+
+
+TITLED_TUESDAY = "titled-tuesday"
+
+
+@dataclass(frozen=True)
+class TitledRow:
+    label: str  # the day of the event, e.g. "03/11/2026"
+    rounds: int
+    participants: int
+    a_points: Decimal | None
+    a_place: int | None
+    b_points: Decimal | None
+    b_place: int | None
+    a_width: int  # bar lengths as a percentage of the points available
+    b_width: int
+    leader: str | None
+
+
+@dataclass(frozen=True)
+class TitledSummary:
+    both: int  # events in which the two took part
+    a_ahead: int
+    b_ahead: int
+    a_average: Decimal
+    b_average: Decimal
+
+
+def _points_width(points: Decimal | None, rounds: int) -> int:
+    if points is None:
+        return 0
+    return max(4, round(100 * float(points) / rounds)) if points else 0
+
+
+def titled_tuesday(a: Player, b: Player, limit: int = 5) -> list[TitledRow]:
+    """The newest Titled Tuesday events in which at least one of the two has a result."""
+    results = TournamentResult.objects.filter(
+        player__in=(a, b),
+        tournament__source=Source.CHESSCOM,
+        tournament__external_id__icontains=TITLED_TUESDAY,
+    ).select_related("tournament")
+    events: dict[int, dict] = {}
+    for result in results:
+        slot = events.setdefault(result.tournament_id, {"tournament": result.tournament})
+        slot["a" if result.player_id == a.pk else "b"] = result
+    newest = sorted(
+        events.values(),
+        key=lambda event: (event["tournament"].start_date, event["tournament"].pk),
+        reverse=True,
+    )[:limit]
+    sizes = dict(
+        Tournament.objects.filter(pk__in=[event["tournament"].pk for event in newest])
+        .annotate(size=Count("results"))
+        .values_list("pk", "size")
+    )
+
+    rows = []
+    for event in newest:
+        tournament = event["tournament"]
+        rounds = tournament.rounds or 11
+        a_result, b_result = event.get("a"), event.get("b")
+        a_points = a_result.points if a_result else None
+        b_points = b_result.points if b_result else None
+        leader = None
+        if a_points is not None and b_points is not None and a_points != b_points:
+            leader = "a" if a_points > b_points else "b"
+        rows.append(
+            TitledRow(
+                label=tournament.start_date.strftime("%d/%m/%Y"),
+                rounds=rounds,
+                participants=sizes.get(tournament.pk, 0),
+                a_points=a_points,
+                a_place=a_result.placement if a_result else None,
+                b_points=b_points,
+                b_place=b_result.placement if b_result else None,
+                a_width=_points_width(a_points, rounds),
+                b_width=_points_width(b_points, rounds),
+                leader=leader,
+            )
+        )
+    return rows
+
+
+def titled_summary(rows: list[TitledRow]) -> TitledSummary | None:
+    """How the two compare in the events they both played. None if they never met there."""
+    both = [row for row in rows if row.a_points is not None and row.b_points is not None]
+    if not both:
+        return None
+    return TitledSummary(
+        both=len(both),
+        a_ahead=sum(row.leader == "a" for row in both),
+        b_ahead=sum(row.leader == "b" for row in both),
+        a_average=sum(row.a_points for row in both) / len(both),
+        b_average=sum(row.b_points for row in both) / len(both),
+    )

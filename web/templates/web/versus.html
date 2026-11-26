@@ -49,6 +49,15 @@
     </section>
     {% endif %}
 
+    {% if mode != "presencial" %}
+    <section class="block">
+      <h2 class="display">Titled Tuesday</h2>
+      <p class="hint">Pontos nas últimas edições (blitz, 11 rondas). A posição conta só os pontos, sem desempates.</p>
+      {% for row in titled %}{% include "web/_versus_titled_row.html" %}{% empty %}<p class="empty">Ainda não há classificações do Titled Tuesday para nenhum dos dois.</p>{% endfor %}
+      {% if titled_summary %}<p class="hint">Nas {{ titled_summary.both }} edi{{ titled_summary.both|pluralize:"ção,ções" }} em que os dois jogaram, {{ a.player.short_name }} ficou à frente {{ titled_summary.a_ahead }} vez{{ titled_summary.a_ahead|pluralize:",es" }} e {{ b.player.short_name }} {{ titled_summary.b_ahead }}. Média de pontos nessas edições: {{ a.player.short_name }} {{ titled_summary.a_average|floatformat:"-1" }}, {{ b.player.short_name }} {{ titled_summary.b_average|floatformat:"-1" }}.</p>{% endif %}
+    </section>
+    {% endif %}
+
     <section class="block">
       <h2 class="display">O que os números dizem</h2>
       <div class="insights">
